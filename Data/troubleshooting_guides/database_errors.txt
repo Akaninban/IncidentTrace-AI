@@ -1,0 +1,100 @@
+DOCUMENT TYPE: Troubleshooting Guide
+TITLE: Database Connection and Query Error Troubleshooting
+DOCUMENT ID: GUIDE-DB-001
+VERSION: 1.0
+STATUS: Sample training document
+SCOPE: Applications using relational databases
+
+PURPOSE
+This guide helps investigate database-related application failures. Error messages can have multiple causes; verify the actual cause using database health, application logs, metrics, and configuration.
+
+SYMPTOM: CONNECTION TIMEOUT
+Example message: "connection to database timed out"
+Possible causes:
+- Database host is unreachable.
+- Firewall, network route, or DNS issue.
+- Database is overloaded or not accepting new connections.
+- Connection pool is exhausted.
+Checks:
+1. Record the timestamp, database endpoint alias, application instance, and request ID.
+2. Check database service health and availability from an approved monitoring tool.
+3. Review network, DNS, and firewall changes.
+4. Inspect active connections, connection-pool usage, and pool wait time.
+5. Compare connection latency and database load with normal baselines.
+Actions after verification:
+- Restore connectivity or service health through the approved operational process.
+- Adjust pool settings only after confirming the limiting factor.
+- Avoid repeatedly restarting services without evidence.
+
+SYMPTOM: AUTHENTICATION FAILURE
+Example message: "password authentication failed"
+Possible causes:
+- Incorrect or rotated credentials.
+- Secret was not updated in an application environment.
+- Database role is disabled or lacks login permission.
+Checks:
+1. Confirm which application environment is affected.
+2. Check secret rotation and deployment history without exposing the secret.
+3. Verify the database role and authentication configuration.
+Actions:
+- Update the secret through the approved secret-management system.
+- Never put passwords, tokens, or connection strings containing credentials in reports.
+
+SYMPTOM: TOO MANY CONNECTIONS
+Example message: "too many connections"
+Possible causes:
+- Connection leak.
+- Pool size multiplied across many application instances.
+- Sudden traffic increase.
+- Database connection limit is too low for the intended workload.
+Checks:
+1. Inspect active and idle sessions.
+2. Compare configured pool size with the number of application replicas.
+3. Review connection acquisition and release behavior.
+4. Check traffic and deployment scaling events.
+Actions:
+- Fix connection lifecycle problems.
+- Tune pool limits using capacity measurements.
+- Do not increase the database limit blindly; memory and workload constraints matter.
+
+SYMPTOM: QUERY TIMEOUT OR SLOW QUERY
+Possible causes:
+- Missing or ineffective index.
+- Large scan or unexpectedly high result volume.
+- Lock contention.
+- Database resource saturation.
+- A query or schema change.
+Checks:
+1. Capture the query fingerprint and duration, not sensitive parameter values.
+2. Review query plans using safe, approved tools.
+3. Inspect lock waits, database CPU, I/O, and connection-pool wait time.
+4. Compare query performance before and after the suspected change.
+Actions:
+- Optimize only after identifying the bottleneck.
+- Test query and index changes in a safe environment before production.
+
+SYMPTOM: DNS OR HOSTNAME RESOLUTION FAILURE
+Example message: "could not translate host name"
+Checks:
+1. Verify the configured hostname for the correct environment.
+2. Check DNS resolution from the affected runtime environment.
+3. Review DNS, container, and network configuration changes.
+4. Confirm the database endpoint has not changed.
+
+INCIDENT EVIDENCE TO COLLECT
+- Incident start time and timezone.
+- Service name, environment, and affected endpoint.
+- Sanitized error message and request/correlation ID.
+- Database availability and latency metrics.
+- Connection count, pool utilization, and wait time.
+- Recent deployments or configuration changes.
+- Checks already performed and their results.
+
+SAFETY NOTES
+- Do not include passwords, tokens, private keys, or personal data in the knowledge base.
+- Do not run destructive SQL commands as a diagnostic shortcut.
+- Use read-only diagnostics where possible and follow change-management rules.
+- Distinguish confirmed observations from possible explanations.
+
+KEYWORDS
+database timeout, connection refused, authentication failure, too many connections, slow query, lock contention, DNS, connection pool, SQL database, troubleshooting

@@ -1,0 +1,25 @@
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+Data/.venv/
+
+# ChromaDB local vector database
+chroma_db/
+**/chroma_db/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Log files
+*.log
+
+# Editor files
+.vscode/
+.DS_Store

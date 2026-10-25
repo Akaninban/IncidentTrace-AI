@@ -1,0 +1,54 @@
+DOCUMENT TYPE: Deployment Record
+TITLE: Sample Release History
+DOCUMENT ID: DEPLOY-001
+STATUS: Synthetic example for RAG testing — not a real production record
+TIMEZONE: UTC
+
+PURPOSE
+This file provides a small deployment timeline that the IncidentTrace AI prototype can retrieve while investigating whether a release may be related to an incident.
+
+RECORD 1
+Deployment ID: REL-DEMO-240
+Service: Catalog API
+Environment: Staging
+Version: 2.4.0
+Start time: 2026-09-18 15:00 UTC
+End time: 2026-09-18 15:03 UTC
+Change summary: Sample release containing an illustrative configuration update.
+Result: Deployment command completed. Application health needs to be evaluated separately.
+Related observation: Synthetic logs show elevated HTTP 500 responses beginning at 15:04 UTC.
+Notes: Temporal proximity is evidence for investigation, not proof of causation.
+
+RECORD 2
+Deployment ID: REL-DEMO-239
+Service: Catalog API
+Environment: Staging
+Version: 2.3.9
+Start time: 2026-09-10 11:00 UTC
+End time: 2026-09-10 11:02 UTC
+Change summary: Previous sample version.
+Result: Marked as the illustrative known-good version for this exercise.
+Notes: Do not assume a prior version is safe to restore without checking compatibility and current operational procedures.
+
+RECORD 3
+Deployment ID: REL-DEMO-ORDERS-118
+Service: Orders API
+Environment: Staging
+Start time: 2026-09-12 09:30 UTC
+End time: 2026-09-12 09:34 UTC
+Change summary: Sample observability update.
+Result: Completed in the synthetic environment.
+Related observation: Database connection timeout example occurs on 2026-09-14, with no matching application-code release recorded in this sample file.
+Notes: Absence from this file does not rule out infrastructure, secret, network, or manual configuration changes.
+
+INVESTIGATION GUIDANCE
+When checking whether a deployment contributed to an outage:
+1. Align incident, log, metric, and deployment timestamps using the same timezone.
+2. Compare the last known-good version with the current version.
+3. Review code, configuration, secrets rotation, infrastructure, and dependency changes.
+4. Check whether error rates change after a controlled rollback or fix.
+5. Record alternative explanations and evidence that would disprove the leading hypothesis.
+6. Follow change-management rules; never perform a production rollback solely because a model suggested it.
+
+KEYWORDS
+deployment history, release timeline, Catalog API, Orders API, rollback, configuration change, staging, HTTP 500, incident investigation

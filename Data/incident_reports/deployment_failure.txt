@@ -1,0 +1,59 @@
+DOCUMENT TYPE: Historical Incident Report
+TITLE: Deployment Followed by Elevated API Errors
+DOCUMENT ID: INC-002
+STATUS: Synthetic example for RAG testing — not a real production incident
+SEVERITY: SEV-2 (illustrative only)
+SERVICE: Catalog API
+ENVIRONMENT: Staging
+TIME WINDOW: 2026-09-18 15:00–15:35 UTC
+OWNER: Sample Release Engineering Team
+
+SUMMARY
+After a sample release, the Catalog API began returning HTTP 500 responses. The timing suggests the release should be investigated, but timing alone does not prove that the release caused the failure.
+
+IMPACT
+In this synthetic scenario, staging users received errors when retrieving catalog items. No real customer impact is claimed.
+
+TIMELINE
+15:00 UTC — Version 2.4.0 is deployed to staging in the sample environment.
+15:04 UTC — Monitoring reports an increase in HTTP 500 responses.
+15:08 UTC — Engineers capture sanitized stack traces and request IDs.
+15:12 UTC — A configuration difference is found between the previous and current staging release.
+15:18 UTC — The team validates the configuration hypothesis in a safe test environment.
+15:23 UTC — The team rolls back to the previous known-good version under the sample change procedure.
+15:28 UTC — Error rate returns to the illustrative baseline.
+15:35 UTC — Incident is closed for the exercise; a corrective configuration change is assigned.
+
+EVIDENCE
+E1: Deployment timestamp precedes the increase in errors.
+E2: Sanitized application logs contain HTTP 500 responses and a configuration-related exception.
+E3: A configuration difference is identified during comparison.
+E4: The error rate returns to baseline after rollback.
+All evidence is synthetic. A real incident requires actual deployment records, logs, and metrics.
+
+HYPOTHESES
+H1: A configuration mismatch introduced during release contributed to the errors.
+Support: E2, E3, and E4 in the sample scenario.
+Confidence: Moderate to high within this fictional exercise; real production confidence depends on validating the records.
+H2: An unrelated dependency failure occurred at the same time.
+Support: Not established in the sample data.
+Confidence: Low / unverified.
+
+ILLUSTRATIVE MITIGATION
+The team rolls back using the approved procedure, confirms service health, and schedules a corrected release. A rollback is not appropriate for every incident; assess risk, data compatibility, and operational procedures first.
+
+FOLLOW-UP ACTIONS
+1. Add automated validation for required configuration values.
+2. Compare effective configuration between release versions.
+3. Add a canary health check that exercises a representative API request.
+4. Attach deployment IDs to logs and incident records.
+5. Add a release checklist for configuration changes.
+
+LESSONS LEARNED
+- A release preceding an outage is a useful lead, not conclusive proof.
+- Compare timestamps across logs, metrics, and deployment records.
+- Use approved rollback procedures and verify recovery.
+- Record evidence and uncertainty separately.
+
+RAG SEARCH TERMS
+deployment failure, release rollback, HTTP 500, configuration mismatch, Catalog API, deployment timeline, release engineering

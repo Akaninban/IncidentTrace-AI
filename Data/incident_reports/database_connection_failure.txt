@@ -1,0 +1,61 @@
+DOCUMENT TYPE: Historical Incident Report
+TITLE: Application Database Connection Failure
+DOCUMENT ID: INC-001
+STATUS: Synthetic example for RAG testing — not a real production incident
+SEVERITY: SEV-2 (illustrative only)
+SERVICE: Orders API
+ENVIRONMENT: Staging
+TIME WINDOW: 2026-09-14 10:02–10:24 UTC
+OWNER: Sample Platform Team
+
+SUMMARY
+The Orders API returned intermittent HTTP 500 responses. Application logs showed database connection timeouts. The sample investigation below demonstrates how to record evidence without assuming that the first error message proves the root cause.
+
+CUSTOMER OR BUSINESS IMPACT
+In this synthetic scenario, staging users could not reliably create test orders for approximately 22 minutes. No production customer impact is asserted.
+
+DETECTION
+A test monitor reported an elevated HTTP 500 rate at 10:02 UTC. The first matching application error was:
+"OperationalError: connection to database timed out"
+
+TIMELINE
+10:02 UTC — Test monitor reports elevated HTTP 500 responses.
+10:05 UTC — Engineer correlates failures with database connection timeout messages.
+10:09 UTC — Database health dashboard shows elevated connection utilization in this fictional example.
+10:13 UTC — Team checks recent configuration and deployment records.
+10:18 UTC — A controlled test after reducing excess connection demand shows successful connections.
+10:24 UTC — Error rate returns to the sample baseline and the incident is marked resolved for this exercise.
+
+EVIDENCE
+E1: Sanitized application log contains "connection to database timed out".
+E2: Illustrative monitoring observation shows high connection utilization during the incident.
+E3: Sample deployment review shows no application-code release during the time window.
+E4: Controlled verification after reducing connection demand succeeds.
+These evidence items are fictional and exist only for testing the prototype.
+
+HYPOTHESES
+H1: Database connection capacity or application connection-pool demand contributed to the timeout.
+Support: E1, E2, and E4 in this synthetic scenario.
+Confidence: Moderate for the exercise; real-world confirmation would require actual metrics and database-side evidence.
+H2: A network interruption caused the timeouts.
+Support: Not established by the sample evidence.
+Confidence: Low / unverified.
+
+ILLUSTRATIVE RESOLUTION
+The sample team reduces excess connection demand, verifies database connectivity, and observes the error rate return to baseline. In a real incident, the team should confirm the specific mechanism before changing pool settings or connection limits.
+
+FOLLOW-UP ACTIONS
+1. Add an alert for connection-pool saturation and wait time.
+2. Review connection acquisition and release paths.
+3. Load-test the configured pool size against expected application replicas.
+4. Add a runbook for database timeout triage.
+5. Record before-and-after metrics for future comparison.
+
+LESSONS LEARNED
+- A timeout is a symptom, not a complete root-cause explanation.
+- Correlate application errors with database metrics and deployment history.
+- Preserve timestamps and request IDs.
+- Clearly label hypotheses and synthetic evidence.
+
+RAG SEARCH TERMS
+Orders API, HTTP 500, database connection timeout, connection pool, high connection utilization, incident timeline, database troubleshooting

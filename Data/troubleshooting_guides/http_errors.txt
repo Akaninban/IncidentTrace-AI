@@ -1,0 +1,129 @@
+DOCUMENT TYPE: Troubleshooting Guide
+TITLE: HTTP Error Troubleshooting Guide
+DOCUMENT ID: GUIDE-HTTP-001
+VERSION: 1.0
+STATUS: Sample training document
+SCOPE: General web applications and REST APIs
+
+PURPOSE
+This guide provides a first-pass investigation checklist for common HTTP errors. The status code alone does not prove the root cause. Confirm the diagnosis using application logs, request IDs, metrics, and recent changes.
+
+HTTP 400 — BAD REQUEST
+Meaning: The server cannot process the request because the request is malformed or invalid.
+Possible causes:
+- Missing required fields or invalid JSON.
+- Incorrect parameter types or unsupported values.
+- Request body does not match the API schema.
+Checks:
+1. Capture the request path, timestamp, and correlation/request ID.
+2. Validate the request body and content type.
+3. Compare the request with the API schema.
+4. Check whether a recent client or API change altered the expected format.
+Suggested action: Correct the request or validation logic. Avoid logging passwords, tokens, or sensitive personal data.
+
+HTTP 401 — UNAUTHORIZED
+Meaning: Authentication is missing or invalid.
+Possible causes:
+- Expired or malformed token.
+- Missing authentication header.
+- Incorrect identity-provider configuration.
+Checks:
+1. Confirm the request includes the expected authentication mechanism.
+2. Check token expiry and authentication service status.
+3. Review authentication logs using the request ID.
+Suggested action: Renew credentials through the approved flow; never paste secrets into incident notes.
+
+HTTP 403 — FORBIDDEN
+Meaning: The caller is authenticated but is not permitted to perform the action.
+Possible causes:
+- Missing role or permission.
+- Incorrect access-control policy.
+- Resource-level authorization rules.
+Checks:
+1. Confirm the identity and intended role.
+2. Review the relevant permission policy.
+3. Compare with a known-good request if appropriate.
+Suggested action: Apply the least-privilege permission needed; do not broadly disable access controls.
+
+HTTP 404 — NOT FOUND
+Meaning: The requested resource or route was not found.
+Possible causes:
+- Typo in URL or resource identifier.
+- Route not registered.
+- Resource was deleted or moved.
+- A reverse proxy routes to the wrong service.
+Checks:
+1. Verify the exact URL and HTTP method.
+2. Check service routing and API version.
+3. Search application logs for the request ID.
+4. Confirm whether a deployment changed routes.
+Suggested action: Correct the path or routing configuration after verification.
+
+HTTP 429 — TOO MANY REQUESTS
+Meaning: A rate limit has been reached.
+Possible causes:
+- Traffic spike or retry loop.
+- Client exceeds configured quota.
+- Rate-limit policy is too restrictive for legitimate traffic.
+Checks:
+1. Inspect request rate and rate-limit metrics.
+2. Check retry behavior and Retry-After headers.
+3. Identify whether one client or many clients are affected.
+Suggested action: Use bounded exponential backoff and review quotas with evidence.
+
+HTTP 500 — INTERNAL SERVER ERROR
+Meaning: The server encountered an unexpected condition.
+Possible causes:
+- Unhandled application exception.
+- Invalid application configuration.
+- Failed dependency or unexpected data.
+Checks:
+1. Match the timestamp and request ID to the server-side stack trace.
+2. Inspect the first relevant exception and its preceding context.
+3. Check dependency health and recent deployments.
+4. Compare error rate before and after a change.
+Suggested action: Reproduce safely, fix the verified issue, and add a regression test. A 500 response alone does not identify the root cause.
+
+HTTP 502 — BAD GATEWAY
+Meaning: A gateway or proxy received an invalid response from an upstream service.
+Checks:
+1. Verify upstream service health and response behavior.
+2. Inspect proxy and load-balancer logs.
+3. Check DNS, TLS, network, and upstream connection settings.
+4. Correlate errors across gateway and application timestamps.
+
+HTTP 503 — SERVICE UNAVAILABLE
+Meaning: The service cannot handle the request at that time.
+Possible causes:
+- Service is down or restarting.
+- Capacity is exhausted.
+- Maintenance or health checks mark instances unavailable.
+Checks:
+1. Check instance health, CPU, memory, queue depth, and saturation.
+2. Review autoscaling events and service restarts.
+3. Inspect dependency availability.
+4. Check whether a rollout or maintenance event coincided with the issue.
+
+HTTP 504 — GATEWAY TIMEOUT
+Meaning: A gateway did not receive a timely upstream response.
+Possible causes:
+- Slow database query.
+- Slow downstream API.
+- Resource contention or network delay.
+Checks:
+1. Compare gateway timeout with application and dependency latency.
+2. Inspect database query duration and connection-pool wait time.
+3. Check traces or correlation IDs across services.
+4. Determine whether timeouts affect all requests or one endpoint.
+
+GENERAL INVESTIGATION CHECKLIST
+- Record start time, end time, timezone, affected service, environment, and impact.
+- Preserve a small, relevant log excerpt and redact secrets.
+- Compare metrics and traces with a known-good period.
+- Review deployments, configuration changes, and dependency incidents.
+- State confirmed facts separately from hypotheses.
+- Do not claim a root cause unless evidence supports it.
+- Escalate according to the organization's incident process.
+
+KEYWORDS
+HTTP 400, HTTP 401, HTTP 403, HTTP 404, HTTP 429, HTTP 500, HTTP 502, HTTP 503, HTTP 504, API errors, web application, troubleshooting, logs, request ID, deployment
